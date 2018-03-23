@@ -14,9 +14,9 @@ export class Jupiter extends React.Component {
     if (props.dev) {
       this.unfollowDevRef = props.climate.follow((forecast, old, attrs) => {
         console.group('weather changed');
-        console.log('weather before', old);
-        console.log('attrs', attrs);
-        console.log('actual weather', forecast);
+        console.info('weather before', old);
+        console.info('attrs', attrs);
+        console.info('actual weather', forecast);
         console.groupEnd('weather changed');
       });
     }

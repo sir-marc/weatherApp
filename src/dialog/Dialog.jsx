@@ -41,7 +41,10 @@ const Dialog = ({ showDialog, closeDialog }) =>
               <button
                 id="butAddCity"
                 className="button"
-                onClick={() => addCity(storm)}
+                onClick={() => {
+                  addCity(storm);
+                  closeDialog();
+                }}
               >
                 Add
               </button>

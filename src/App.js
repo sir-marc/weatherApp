@@ -21,7 +21,6 @@ const refreshWeather = ({ cities, storm }) => {
   );
   Promise.all(weatherUpdatePromises).then(resp =>
     storm(() => {
-      console.log(resp);
       return { cities: resp };
     })(),
   );

@@ -1,3 +1,3 @@
 export { createClimate } from './weathux';
 
-export { Jupiter, Mars } from './Wheatux';
+export { Jupiter, Mars } from './weathux-react';

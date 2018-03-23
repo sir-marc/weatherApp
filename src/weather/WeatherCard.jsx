@@ -1,6 +1,5 @@
 import React from 'react';
 import FutureDay from './FutureDay';
-import { getWeatherForcastForCity } from '../api/api';
 import { getIcon } from '../utils/getIcon';
 import { Mars } from '../weathux';
 import { stormForecast } from './stormForecast';

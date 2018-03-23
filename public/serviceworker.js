@@ -29,12 +29,14 @@ const filesToCache = [
 self.addEventListener('activate', e => {
   log('Activate');
   e.waitUntil(
-    caches.keys().then(keyList => {
-      if (key !== assetsCacheName && key !== dataCacheName) {
-        log('Removing old cache');
-        return caches.delete(key);
-      }
-    }),
+    caches.keys().then(keyList =>
+      keyList.map(key => {
+        if (key !== assetsCacheName && key !== dataCacheName) {
+          log('Removing old cache');
+          return caches.delete(key);
+        }
+      }),
+    ),
   );
 });
 

@@ -3,16 +3,16 @@ import { Dialog } from './dialog/Dialog';
 import { initLocalStorage, getSelectedCities } from './api/localStorage';
 import { WeatherCardList } from './weather/WeatherCardList';
 import { createClimate, Jupiter, Mars } from './weathux';
-import { getWeatherForcastForCity } from './api/api';
 import { stormForecast } from './weather/stormForecast';
 
 const climate = createClimate({
   cities: getSelectedCities(),
 });
 
-const clearStorage = () => {
+const clearStorage = swReg => {
   initLocalStorage(true);
   // later may remove serviceWorker, clear cache and Co
+  swReg.unregister();
   window.location.reload();
 };
 
@@ -26,9 +26,18 @@ class App extends Component {
     this.state = { showDialog: false };
     initLocalStorage();
   }
+
+  componentDidMount() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./serviceworker.js').then(reg => {
+        this.swReg = reg;
+      });
+    }
+  }
+
   render() {
     return (
-      <Jupiter climate={climate} dev>
+      <Jupiter climate={climate}>
         <div className="App">
           <div height="800px" />
           <header className="header">
@@ -45,7 +54,7 @@ class App extends Component {
                           cities: forecast.cities,
                           storm,
                         })
-                      : clearStorage()
+                      : clearStorage(this.swReg)
                   }
                 />
               )}

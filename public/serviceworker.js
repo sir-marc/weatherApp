@@ -1,6 +1,7 @@
 const log = (...args) => console.log('[ServiceWorker]', ...args);
 const v = 'v0.4';
 const assetsCacheName = 'weather-app-assets-' + v;
+const dataCacheName = 'weather-app-data-' + v;
 
 const filesToCache = [
   '/',
@@ -25,6 +26,18 @@ const filesToCache = [
   '/assets/images/wind.png',
 ];
 
+self.addEventListener('activate', e => {
+  log('Activate');
+  e.waitUntil(
+    caches.keys().then(keyList => {
+      if (key !== assetsCacheName && key !== dataCacheName) {
+        log('Removing old cache');
+        return caches.delete(key);
+      }
+    }),
+  );
+});
+
 self.addEventListener('install', e => {
   log('Install');
   e.waitUntil(
@@ -36,10 +49,28 @@ self.addEventListener('install', e => {
 });
 
 self.addEventListener('fetch', e => {
+  const { request } = e;
   log('Fetch');
-  e.respondWith(
-    caches.match(e.request).then(resp => {
-      return resp || fetch(e.request);
-    }),
-  );
+  const dataUrl = 'https://query.yahooapis.com/v1/public/yql';
+
+  if (request.url.indexOf(dataUrl) > -1) {
+    // fresh weather data
+    e.respondWith(
+      caches.open(dataCacheName).then(cache =>
+        fetch(request)
+          .then(resp => {
+            cache.put(request.url, resp.clone());
+            return resp;
+          })
+          .catch(console.error),
+      ),
+    );
+  } else {
+    // app shell
+    e.respondWith(
+      caches.match(request).then(resp => {
+        return resp || fetch(request);
+      }),
+    );
+  }
 });

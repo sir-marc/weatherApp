@@ -1,7 +1,7 @@
 import React from 'react';
 import { addSelectedCity } from '../api/localStorage';
 import { Mars } from '../weathux';
-import { getWeatherForcastForCity } from '../api/api';
+import { stormForecast } from '../weather/stormForecast';
 
 const addCity = storm => {
   const select = document.getElementById('selectCityToAdd');
@@ -10,11 +10,8 @@ const addCity = storm => {
   const label = selected.textContent;
   // store to local storage
   addSelectedCity({ key, label });
-  getWeatherForcastForCity({ key, label }).then(resp =>
-    storm(({ cities }) => {
-      return { cities: [...cities.filter(c => c.key !== resp.key), resp] };
-    })(),
-  );
+
+  stormForecast({ key, label }, storm);
 };
 
 const Dialog = ({ showDialog, closeDialog }) =>

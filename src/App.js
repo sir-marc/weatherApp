@@ -4,6 +4,7 @@ import { initLocalStorage, getSelectedCities } from './api/localStorage';
 import { WeatherCardList } from './weather/WeatherCardList';
 import { createClimate, Jupiter, Mars } from './weathux';
 import { getWeatherForcastForCity } from './api/api';
+import { stormForecast } from './weather/stormForecast';
 
 const climate = createClimate({
   cities: getSelectedCities(),
@@ -16,14 +17,7 @@ const clearStorage = () => {
 };
 
 const refreshWeather = ({ cities, storm }) => {
-  const weatherUpdatePromises = cities.map(city =>
-    getWeatherForcastForCity(city),
-  );
-  Promise.all(weatherUpdatePromises).then(resp =>
-    storm(() => {
-      return { cities: resp };
-    })(),
-  );
+  cities.forEach(city => stormForecast(city, storm));
 };
 
 class App extends Component {

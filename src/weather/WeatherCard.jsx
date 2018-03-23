@@ -3,6 +3,7 @@ import FutureDay from './FutureDay';
 import { getWeatherForcastForCity } from '../api/api';
 import { getIcon } from '../utils/getIcon';
 import { Mars } from '../weathux';
+import { stormForecast } from './stormForecast';
 
 const WeatherCard = props => {
   const { weather } = props;
@@ -62,13 +63,7 @@ const Hercules = props => {
     <Mars>
       {({ storm }) => {
         if (props.city.created) return <WeatherCard weather={props.city} />;
-        getWeatherForcastForCity(props.city).then(resp => {
-          storm(({ cities }) => {
-            return {
-              cities: [...cities.filter(c => c.key !== resp.key), resp],
-            };
-          })();
-        });
+        stormForecast(props.city, storm);
         return 'Loading...';
       }}
     </Mars>

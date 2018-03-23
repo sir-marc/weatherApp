@@ -8,16 +8,34 @@ const transformData = data => ({
   wind: data.channel.wind,
 });
 
-export const getWeatherForcastForCity = ({ key, label }) => {
+export const getWeatherForcastForCity = ({ key, label }, callback) => {
   const statement = 'select * from weather.forecast where woeid=' + key;
   const url =
     'https://query.yahooapis.com/v1/public/yql?format=json&q=' + statement;
-  return fetch(url).then(response =>
-    response.json().then(resp => ({
-      ...transformData(resp.query.results),
-      key,
-      label,
-      created: resp.query.created,
-    })),
+
+  if ('caches' in window) {
+    caches.match(url).then(response => {
+      if (response) {
+        response.json().then(resp =>
+          callback({
+            ...transformData(resp.query.results),
+            key,
+            label,
+            created: resp.query.created,
+          }),
+        );
+      }
+    });
+  }
+
+  fetch(url).then(response =>
+    response.json().then(resp =>
+      callback({
+        ...transformData(resp.query.results),
+        key,
+        label,
+        created: resp.query.created,
+      }),
+    ),
   );
 };

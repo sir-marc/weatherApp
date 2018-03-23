@@ -1,6 +1,6 @@
 export const getIcon = function(weatherCode) {
   // Weather codes: https://developer.yahoo.com/weather/documentation.html#codes
-  weatherCode = parseInt(weatherCode);
+  weatherCode = parseInt(weatherCode, 10);
   switch (weatherCode) {
     case 25: // cold
     case 32: // sunny
@@ -59,5 +59,7 @@ export const getIcon = function(weatherCode) {
     case 30: // partly cloudy (day)
     case 44: // partly cloudy
       return 'partly-cloudy-day';
+    default:
+      return '';
   }
 };
